@@ -2,8 +2,9 @@ use async_trait::async_trait;
 
 use crate::core_utils::errors::OurErrors;
 
-#[derive(Debug, Clone, Copy)]
-pub struct NoParam;
+pub type NoParam = ();
+
+pub type VoidResponse = ();
 
 pub trait OurResponse {}
 

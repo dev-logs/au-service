@@ -1,0 +1,4 @@
+# .rustfmt.toml
+
+# Maximum line length for code
+max_width = 120
