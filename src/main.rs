@@ -13,7 +13,13 @@ use crate::api::controllers::user::UserController;
 #[tokio::main]
 async fn main() {
     let mut log_builder = formatted_timed_builder();
-    log_builder.filter(None, log::LevelFilter::Info);
+    if let Ok(filter_env) = std::env::var("RUST_LOG") {
+        log_builder.parse_filters(&filter_env);
+    }
+    else {
+        log_builder.filter(None, log::LevelFilter::Info);
+    }
+
     log_builder.init();
 
     let main_route = Router::new().merge(UserController::new().router);

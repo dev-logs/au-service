@@ -6,7 +6,7 @@ async fn try_api() -> Result<()> {
     let hc = httpc_test::new_client("http://localhost:3000").unwrap();
 
     hc.do_post(
-        "/update",
+        "/update2",
         json!({
             "userName": "tiendang",
             "userPassword": "password"

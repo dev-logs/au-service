@@ -1,5 +1,6 @@
 use crate::api::controllers::base::ControllerState;
 use crate::core_utils::errors::OurErrors;
+use crate::entities::token::Token;
 use axum::extract::State;
 use axum::{routing::post, Json, Router};
 use log::info;
@@ -18,8 +19,8 @@ impl UserController {
         }
     }
 
-    pub async fn update(State(state): State<ControllerState>) -> Result<Json<Value>, OurErrors> {
-        info!(target: &state.ns, "Triggered update user");
+    pub async fn update(State(state): State<ControllerState>, token: Token) -> Result<Json<Value>, OurErrors> {
+        info!(target: &state.ns, "Triggered update user {:?}", token);
         Err(OurErrors::UnAuthorization)
     }
 }

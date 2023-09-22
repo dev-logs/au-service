@@ -1,2 +1,4 @@
-#[derive(Debug, Clone, Copy)]
-pub struct Token {}
+#[derive(Debug, Clone)]
+pub struct Token {
+    pub token: String,
+}
