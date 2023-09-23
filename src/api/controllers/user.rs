@@ -5,7 +5,6 @@ use crate::services::create_user::CreateUserService;
 use axum::extract::State;
 use axum::{routing::post, Json, Router};
 use lazy_static::__Deref;
-use serde_json::Value;
 use surrealdb::Surreal;
 use surrealdb::engine::remote::ws::Client;
 
@@ -30,7 +29,7 @@ impl UserController {
         }
     }
 
-    pub async fn create(State(state): State<UserControllerState>, create_user: Json<User>) -> Result<(), OurErrors> {
+    pub async fn create(State(state): State<UserControllerState>, create_user: Json<User>) -> Result<User, OurErrors> {
         Ok(state.create_user_service.execute(crate::services::create_user::Params { user: create_user.deref().clone() }).await?)
     }
 }

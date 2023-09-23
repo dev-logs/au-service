@@ -1,7 +1,6 @@
 use crate::Db;
 use crate::entities::user::User;
-use crate::core_utils::errors::OurErrors;
-use crate::services::base::{OurService, VoidResponse};
+use crate::services::base::{OurService, OurResult};
 use async_trait::async_trait;
 
 #[derive(Clone)]
@@ -15,10 +14,10 @@ pub struct Params {
 }
 
 #[async_trait]
-impl OurService<Params, VoidResponse> for CreateUserService {
-    async fn execute(&self, params: Params) -> Result<VoidResponse, OurErrors> {
-        let _: Vec<User> = self.db.create("user").content(params.user).await?;
-        Ok(())
+impl OurService<Params, User> for CreateUserService {
+    async fn execute(&self, params: Params) -> OurResult<User> {
+        let created_users: Vec<User> = self.db.create("user").content(params.user).await?;
+        Ok(created_users.first().unwrap().clone())
     }
 }
 
