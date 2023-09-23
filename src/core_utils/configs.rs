@@ -44,21 +44,11 @@ impl Default for SurrealDb {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct Config {
     pub surreal_db: SurrealDb,
     pub grpc_service: GrpcService,
     pub restful_service: RestfulService,
-}
-
-impl Default for Config {
-    fn default() -> Self {
-        Config {
-            surreal_db: Default::default(),
-            restful_service: Default::default(),
-            grpc_service: Default::default(),
-        }
-    }
 }
 
 lazy_static! {
