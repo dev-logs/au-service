@@ -11,7 +11,7 @@ pub trait OurResponse {}
 #[async_trait]
 pub trait OurService<P, T>
 where
-    P: Clone + Copy,
+    P: Clone,
 {
     async fn execute(&self, params: P) -> Result<T, OurErrors>;
 }

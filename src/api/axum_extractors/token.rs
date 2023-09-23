@@ -13,7 +13,7 @@ impl<S: Send + Sync> FromRequestParts<S> for Token {
         let headers = &parts.headers;
         if headers.contains_key("Authorization") {
             return Result::Ok(
-                Token {token: headers.get("Authorization").unwrap().to_str().unwrap().to_owned()}
+                Token {value: headers.get("Authorization").unwrap().to_str().unwrap().to_owned()}
             );
         }
 
