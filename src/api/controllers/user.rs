@@ -1,6 +1,6 @@
 use crate::core_utils::errors::OurErrors;
 use crate::entities::user::User;
-use crate::services::base::OurService;
+use crate::services::base::{OurService, OurResult};
 use crate::services::create_user::CreateUserService;
 use axum::extract::State;
 use axum::{routing::post, Json, Router};
@@ -29,7 +29,7 @@ impl UserController {
         }
     }
 
-    pub async fn create(State(state): State<UserControllerState>, create_user: Json<User>) -> Result<User, OurErrors> {
+    pub async fn create(State(state): State<UserControllerState>, create_user: Json<User>) -> OurResult<User> {
         Ok(state.create_user_service.execute(crate::services::create_user::Params { user: create_user.deref().clone() }).await?)
     }
 }
