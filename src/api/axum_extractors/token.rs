@@ -12,10 +12,12 @@ impl<S: Send + Sync> FromRequestParts<S> for Token {
         info!("->> {:<12} - Context", "EXTRACTOR");
         let headers = &parts.headers;
         if headers.contains_key("Authorization") {
-            return Result::Ok(Token {token: headers.get("Authorization").unwrap().to_str().unwrap().to_owned()});
+            return Result::Ok(
+                Token {token: headers.get("Authorization").unwrap().to_str().unwrap().to_owned()}
+            );
         }
 
-        info!("UnAuthorization");
         Err(OurErrors::UnAuthorization)
     }
 }
+
