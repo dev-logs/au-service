@@ -3,6 +3,7 @@ mod core_utils;
 mod entities;
 mod grpc;
 mod services;
+mod db;
 
 use axum::{Router, Server};
 use log::info;
