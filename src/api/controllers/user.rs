@@ -1,4 +1,3 @@
-use crate::core_utils::errors::OurErrors;
 use crate::entities::user::User;
 use crate::services::base::{OurService, OurResult};
 use crate::services::create_user::CreateUserService;
@@ -21,11 +20,11 @@ pub struct UserControllerState {
 impl UserController {
     pub fn new(db: Surreal<Client>) -> Self {
         UserController {
-            router: Router::new().route("/update", post(Self::create))
+            router: Router::new().route("/create", post(Self::create))
                 .with_state(UserControllerState {
                     ns: String::from(""),
                     create_user_service: CreateUserService { db: db.clone() }
-                }),
+                })
         }
     }
 
@@ -33,4 +32,3 @@ impl UserController {
         Ok(state.create_user_service.execute(crate::services::create_user::Params { user: create_user.deref().clone() }).await?)
     }
 }
-
