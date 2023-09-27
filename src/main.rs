@@ -5,6 +5,7 @@ mod grpc;
 mod services;
 mod db;
 
+use api::controllers::authentication::AuthenticationController;
 use axum::{Router, Server};
 use log::info;
 use crate::core_utils::configs::CONFIGS;
@@ -51,7 +52,9 @@ async fn main() {
     // #region restful service
     info!(target: &namespace, "Starting Restful API server is started at port: {}", CONFIGS.restful_service.port);
     let main_route = Router::new()
-        .merge(UserController::new(DB.clone()).router);
+        .merge(UserController::new(DB.clone()).router)
+        .merge(AuthenticationController::new(DB.clone()).router);
+
     Server::bind(&SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), CONFIGS.restful_service.port))
         .serve(main_route.into_make_service())
         .await
