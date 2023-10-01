@@ -53,11 +53,26 @@ impl Default for SurrealDb {
     }
 }
 
+#[derive(Debug)]
+pub struct JwtConfig {
+    pub private_key: String,
+}
+
+impl Default for SurrealDb {
+    fn default() -> Self {
+        JwtConfig {
+            private_key: env::var("DEVLOGS_AU_JWT_PRIVATE_KEY")
+                .unwrap_or("this_is_unsafe_keythis_is_unsafe_keythis_is_unsafe_key".to_owned()),
+        }
+    }
+}
+
 #[derive(Debug, Default)]
 pub struct Config {
     pub surreal_db: SurrealDb,
     pub grpc_service: GrpcService,
     pub restful_service: RestfulService,
+    pub jwt_config: JwtConfig,
 }
 
 lazy_static! {

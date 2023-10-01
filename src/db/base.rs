@@ -5,13 +5,13 @@ use surrealdb::{
 
 use crate::core_utils::errors::OurErrors;
 
-pub struct DbResource<R>(pub (String, String), pub R);
+pub struct DbResource<R>(pub (String, Id), pub R);
 
-impl<R> IntoResource<R> for DbResource<R> {
+impl<R, T> IntoResource<R> for DbResource<R> {
     fn into_resource(self) -> surrealdb::Result<Resource> {
         Ok(Resource::RecordId(RecordId {
             tb: self.0 .0,
-            id: Id::String(self.0 .1),
+            id: self.0.1,
         }))
     }
 }
