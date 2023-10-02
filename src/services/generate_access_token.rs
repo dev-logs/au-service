@@ -6,7 +6,7 @@ pub struct GenerateTokenService;
 
 #[async_trait]
 impl OurService<NoParam, VoidResponse> for GenerateTokenService {
-    async fn execute(&self, _: NoParam) -> Result<VoidResponse, OurErrors> {
+    async fn execute(self, _: NoParam) -> Result<VoidResponse, OurErrors> {
         Ok(())
     }
 }

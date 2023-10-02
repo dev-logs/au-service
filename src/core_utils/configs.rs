@@ -58,7 +58,7 @@ pub struct JwtConfig {
     pub private_key: String,
 }
 
-impl Default for SurrealDb {
+impl Default for JwtConfig {
     fn default() -> Self {
         JwtConfig {
             private_key: env::var("DEVLOGS_AU_JWT_PRIVATE_KEY")

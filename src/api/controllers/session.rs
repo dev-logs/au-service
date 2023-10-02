@@ -34,7 +34,4 @@ impl SessionController {
     pub async fn create(State(state): State<SessionControllerState>, user: Json<User>) -> OurResult<User> {
         state.register_service.execute(register::Params {user: user.deref().to_owned()}).await
     }
-
-    pub async fn get(State(state): State<SessionControllerState>, token: Token) -> OurResult<Session> {
-    }
 }

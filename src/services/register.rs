@@ -15,7 +15,7 @@ pub struct Params {
 
 #[async_trait]
 impl OurService<Params, User> for RegisterUserService {
-    async fn execute(&self, params: Params) -> OurResult<User> {
+    async fn execute(self, params: Params) -> OurResult<User> {
         self.create_user_service.execute(create_user::Params {user: params.user}).await
 
     }

@@ -15,5 +15,5 @@ pub trait OurService<P, T>
 where
     P: Clone,
 {
-    async fn execute(&self, params: P) -> OurResult<T>;
+    async fn execute(self, params: P) -> OurResult<T>;
 }

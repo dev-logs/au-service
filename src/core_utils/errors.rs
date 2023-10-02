@@ -7,8 +7,8 @@ pub enum OurErrors {
     UnAuthorization,
     #[error("Internal server error {}", .0)]
     DbError(#[from] surrealdb::Error),
-    #[error("Internal server error {}", 0)]
-    InternalServerError(#[from] String),
+    #[error("Internal server error")]
+    InternalServerError{ message: String },
 }
 
 impl IntoResponse for OurErrors {
@@ -16,8 +16,8 @@ impl IntoResponse for OurErrors {
         match self {
             OurErrors::UnAuthorization => (StatusCode::UNAUTHORIZED, self.to_string()).into_response(),
             OurErrors::DbError(_) => (StatusCode::INTERNAL_SERVER_ERROR, self.to_string()).into_response(),
-            OurErrors::InternalServerError(err_str) => {
-                (StatusCode::INTERNAL_SERVER_ERROR, self.to_string()).into_response()
+            OurErrors::InternalServerError { message } => {
+                (StatusCode::INTERNAL_SERVER_ERROR, message).into_response()
             }
         }
     }

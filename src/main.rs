@@ -1,3 +1,4 @@
+extern crate proc_macro;
 mod api;
 mod core_utils;
 mod entities;

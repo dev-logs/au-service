@@ -7,7 +7,7 @@ use crate::core_utils::errors::OurErrors;
 
 pub struct DbResource<R>(pub (String, Id), pub R);
 
-impl<R, T> IntoResource<R> for DbResource<R> {
+impl<R> IntoResource<R> for DbResource<R> {
     fn into_resource(self) -> surrealdb::Result<Resource> {
         Ok(Resource::RecordId(RecordId {
             tb: self.0 .0,

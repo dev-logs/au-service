@@ -17,14 +17,13 @@ pub struct Params {
 
 #[async_trait]
 impl OurService<Params, User> for CreateUserService {
-    async fn execute(&self, params: Params) -> OurResult<User> {
+    async fn execute(self, params: Params) -> OurResult<User> {
         let vs: Vec<User> = vec! {User { name: "".to_string(), password: "".to_string() }};
         let DbResource(db, value) = params.user.into_db_resource()?;
 
-        self.db.create(vs).content(value.clone()).await;
-        // if let Some(created_user) = self.db.create(db).content(value).await? {
-        //    return Ok(created_user);
-        // }
+        if let Some(created_user) = self.db.create(db).content(value).await? {
+           return Ok(created_user);
+        }
 
         Result::Err(OurErrors::UnAuthorization)
     }
