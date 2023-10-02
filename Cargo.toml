@@ -19,6 +19,7 @@ once_cell = "1.18.0"
 lazy_static = "1.4.0"
 jwt = "0.16.0"
 hmac = "0.12.1"
+devl-macro = { path = "../devl-macro" }
 
 [dev-dependencies]
 anyhow = "1"

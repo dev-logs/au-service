@@ -1,4 +1,7 @@
 extern crate proc_macro;
+extern crate async_trait;
+extern crate devl_macro;
+
 mod api;
 mod core_utils;
 mod entities;
@@ -8,10 +11,11 @@ mod db;
 
 use api::controllers::authentication::AuthenticationController;
 use axum::{Router, Server};
+use devl_macro::surreal_derive;
 use log::info;
 use crate::core_utils::configs::CONFIGS;
-use surrealdb::{Surreal, engine::remote::ws::{Ws, Client}, opt::auth::Root};
-use std::net::{IpAddr, Ipv4Addr, SocketAddr};
+use surrealdb::{Surreal, engine::remote::ws::{Ws, Client}, opt::auth::Root, sql::{Value, statements, Table, Data, Idiom}};
+use std::{net::{IpAddr, Ipv4Addr, SocketAddr}, collections::BTreeMap};
 use once_cell::sync::Lazy;
 
 use pretty_env_logger::formatted_timed_builder;
@@ -61,5 +65,32 @@ async fn main() {
         .await
         .unwrap();
     // #endregion
+}
+
+#[derive(devl_macro::surreal_derive)]
+pub struct PP {
+    pub name: String,
+    pub age: i32,
+
+}
+
+#[test]
+fn test_derive() {
+    println!("Tiendang-debug");
+    let x = PP {name: String::from(""), age: 32};
+    let vi= Value::from(x.age.clone());
+    let a = x.into_btreemap();
+    let obj_v = Value::from(a);
+
+    let create_command = statements::CreateStatement {
+        only: true,
+        what: surrealdb::sql::Values(vec![Value::Table(Table("".to_owned()))]),
+        data: Some(Data::SetExpression(vec![
+
+        ])),
+        output: None,
+        timeout: None,
+        parallel: false,
+    };
 }
 

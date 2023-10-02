@@ -25,6 +25,7 @@ impl OurService<Params, Session> for CreateSessionService {
             return Err(OurErrors::UnAuthorization);
         }
 
+        self.db.create().content()
         let now = Utc::now();
         let new_session = Session {
             current_refresh_token: Token {
