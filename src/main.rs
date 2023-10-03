@@ -16,9 +16,11 @@ use log::info;
 use crate::core_utils::configs::CONFIGS;
 use surrealdb::{Surreal, engine::remote::ws::{Ws, Client}, opt::auth::Root, sql::{Value, statements, Table, Data, Idiom}};
 use std::{net::{IpAddr, Ipv4Addr, SocketAddr}, collections::BTreeMap};
+use std::fmt::Display;
 use once_cell::sync::Lazy;
 
 use pretty_env_logger::formatted_timed_builder;
+use surrealdb::sql::{Operator, Statements};
 use crate::api::controllers::user::UserController;
 
 type Db = Surreal<Client>;
@@ -78,19 +80,23 @@ pub struct PP {
 fn test_derive() {
     println!("Tiendang-debug");
     let x = PP {name: String::from(""), age: 32};
-    let vi= Value::from(x.age.clone());
-    let a = x.into_btreemap();
-    let obj_v = Value::from(a);
 
     let create_command = statements::CreateStatement {
-        only: true,
         what: surrealdb::sql::Values(vec![Value::Table(Table("".to_owned()))]),
-        data: Some(Data::SetExpression(vec![
-
-        ])),
-        output: None,
-        timeout: None,
-        parallel: false,
+        data: Some(Data::SetExpression(x.into_create_expressions())),
+        ..Default::default()
     };
+
+    // let update_command = statements::UpdateStatement {
+    //     only: false,
+    //     what: surrealdb::sql::Values(vec![Value::Table(Table("pp".to_owned()))]),
+    //     data: Some(Data::UpdateExpression(x.into_update_expressions())),
+    //     cond: None,
+    //     output: None,
+    //     timeout: None,
+    //     parallel: false,
+    // };
+
+    println!("tiendang sql: {}", create_command);
 }
 
