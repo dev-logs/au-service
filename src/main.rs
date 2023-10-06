@@ -97,6 +97,6 @@ fn test_derive() {
     //     parallel: false,
     // };
 
-    println!("tiendang sql: {}", create_command);
+    println!("tiendang sql: {}", create_command.data.unwrap());
 }
 

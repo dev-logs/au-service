@@ -20,6 +20,7 @@ lazy_static = "1.4.0"
 jwt = "0.16.0"
 hmac = "0.12.1"
 devl-macro = { path = "../devl-macro" }
+surreal-devl = { path = "../surreal-devl/" }
 
 [dev-dependencies]
 anyhow = "1"
