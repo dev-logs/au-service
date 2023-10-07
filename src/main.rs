@@ -1,6 +1,6 @@
 extern crate proc_macro;
 extern crate async_trait;
-extern crate devl_macro;
+extern crate surreal_derive;
 
 mod api;
 mod core_utils;
@@ -11,7 +11,7 @@ mod db;
 
 use api::controllers::authentication::AuthenticationController;
 use axum::{Router, Server};
-use devl_macro::surreal_derive;
+use surreal_derive::*;
 use log::info;
 use crate::core_utils::configs::CONFIGS;
 use surrealdb::{Surreal, engine::remote::ws::{Ws, Client}, opt::auth::Root, sql::{Value, statements, Table, Data, Idiom}};
@@ -69,7 +69,7 @@ async fn main() {
     // #endregion
 }
 
-#[derive(devl_macro::surreal_derive)]
+#[derive(surreal_derive::surreal_derive)]
 pub struct PP {
     pub name: String,
     pub age: i32,
