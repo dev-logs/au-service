@@ -1,6 +1,7 @@
 extern crate proc_macro;
 extern crate async_trait;
 extern crate surreal_derive;
+extern crate surrealdb;
 
 mod api;
 mod core_utils;
@@ -17,10 +18,14 @@ use crate::core_utils::configs::CONFIGS;
 use surrealdb::{Surreal, engine::remote::ws::{Ws, Client}, opt::auth::Root, sql::{Value, statements, Table, Data, Idiom}};
 use std::{net::{IpAddr, Ipv4Addr, SocketAddr}, collections::BTreeMap};
 use std::fmt::Display;
+use std::ops::Deref;
 use once_cell::sync::Lazy;
 
 use pretty_env_logger::formatted_timed_builder;
-use surrealdb::sql::{Operator, Statements};
+use surreal_devl::serialize::SurrealSerialize;
+use surrealdb::opt::RecordId;
+use surrealdb::sql::{Array, Id, Operation, Operator, Statements};
+use surrealdb::sql::Value::Thing;
 use crate::api::controllers::user::UserController;
 
 type Db = Surreal<Client>;
@@ -69,34 +74,45 @@ async fn main() {
     // #endregion
 }
 
-#[derive(surreal_derive::surreal_derive)]
-pub struct PP {
+#[derive(Clone, surreal_derive::surreal_derive)]
+pub struct XX {
     pub name: String,
-    pub age: i32,
+}
+#[derive(Clone, surreal_derive::surreal_derive)]
+pub struct PP {
+    pub friends: Vec<XX>,
+    pub name: String,
+    pub friend: XX,
+    pub age: i32
+}
 
+impl Into<surrealdb::sql::Thing> for PP {
+    fn into(self) -> RecordId {
+        RecordId::from(("user", "tiendang"))
+    }
+}
+
+impl Into<surrealdb::sql::Thing> for XX {
+    fn into(self) -> RecordId {
+        RecordId::from(("user", "tiendang"))
+    }
 }
 
 #[test]
 fn test_derive() {
-    println!("Tiendang-debug");
-    let x = PP {name: String::from(""), age: 32};
+    let x = PP {friends: vec![XX {name: String::from("tiendang friend arr")}], name: "tiendang".to_string(), friend: XX {
+        name: String::from("am friend")
+    }, age: 20 };
 
     let create_command = statements::CreateStatement {
-        what: surrealdb::sql::Values(vec![Value::Table(Table("".to_owned()))]),
-        data: Some(Data::SetExpression(x.into_create_expressions())),
+        what: surrealdb::sql::Values(vec![Value::from(RecordId::from(("user".to_owned(), "tiendang".to_owned())))]),
+        data: Some(Data::SetExpression(x.into_idiom_value().iter().map(|a| {
+            (a.0.clone(), Operator::Equal, (&a).1.clone())
+        }).collect())),
         ..Default::default()
     };
 
-    // let update_command = statements::UpdateStatement {
-    //     only: false,
-    //     what: surrealdb::sql::Values(vec![Value::Table(Table("pp".to_owned()))]),
-    //     data: Some(Data::UpdateExpression(x.into_update_expressions())),
-    //     cond: None,
-    //     output: None,
-    //     timeout: None,
-    //     parallel: false,
-    // };
+    let statement = surreal_quote!("SELECT * from #user");
 
-    println!("tiendang sql: {}", create_command.data.unwrap());
+    assert_eq!(statement.trim(), create_command.to_string());
 }
-
