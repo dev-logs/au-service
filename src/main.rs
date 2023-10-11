@@ -104,15 +104,13 @@ fn test_derive() {
         name: String::from("am friend")
     }, age: 20 };
 
-    let create_command = statements::CreateStatement {
-        what: surrealdb::sql::Values(vec![Value::from(RecordId::from(("user".to_owned(), "tiendang".to_owned())))]),
-        data: Some(Data::SetExpression(x.into_idiom_value().iter().map(|a| {
-            (a.0.clone(), Operator::Equal, (&a).1.clone())
-        }).collect())),
-        ..Default::default()
-    };
+    // let create_command = statements::CreateStatement {
+    //     what: surrealdb::sql::Values(vec![Value::from(RecordId::from(("user".to_owned(), "tiendang".to_owned())))]),
+    //     data: Some(Data::SetExpression(x.into_set_expression())),
+    //     ..Default::default()
+    // };
 
     let statement = surreal_quote!("SELECT * from #user");
 
-    assert_eq!(statement.trim(), create_command.to_string());
+    assert_eq!(statement.trim(), x.into_set_expression());
 }
