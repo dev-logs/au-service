@@ -3,7 +3,7 @@ use crate::core_utils::errors::OurErrors;
 use crate::entities::user::User;
 use crate::services::base::{OurService, OurResult};
 use async_trait::async_trait;
-use crate::db::base::{DbResource, IntoDbResource};
+use surreal_derive::surreal_quote;
 
 #[derive(Clone)]
 pub struct CreateUserService {
@@ -18,13 +18,11 @@ pub struct Params {
 #[async_trait]
 impl OurService<Params, User> for CreateUserService {
     async fn execute(self, params: Params) -> OurResult<User> {
-        let DbResource(db, value) = params.user.into_db_resource()?;
-
-        if let Some(created_user) = self.db.create(db).content(value).await? {
+        if let Some(created_user) = self.db.query(surreal_quote!("CREATE #record(&params.user)")).await?.take(0)? {
            return Ok(created_user);
         }
 
-        Result::Err(OurErrors::UnAuthorization)
+       Err(OurErrors::UnAuthorization)
     }
 }
 

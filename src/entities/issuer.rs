@@ -1,7 +1,8 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
+use surreal_derive::SurrealDerive;
 
-#[derive(Deserialize, Serialize, Debug, Clone)]
+#[derive(Deserialize, Serialize, Debug, Clone, SurrealDerive)]
 pub struct Issuer {
     pub name: String,
     pub base_uri: Option<String>,

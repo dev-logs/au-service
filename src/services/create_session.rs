@@ -1,7 +1,7 @@
 use async_trait::async_trait;
-use chrono::{DateTime, Utc};
-use crate::{Db, entities::{session::Session, user::User}, core_utils::errors::OurErrors, db::base::IntoDbResource};
-use crate::db::base::DbResource;
+use chrono::Utc;
+use surreal_derive::surreal_quote;
+use crate::{Db, entities::{session::Session, user::User}, core_utils::errors::OurErrors};
 use crate::entities::token::Token;
 
 use super::base::{OurService, OurResult};
@@ -37,8 +37,7 @@ impl OurService<Params, Session> for CreateSessionService {
             user: user.unwrap()
         };
 
-        let DbResource(session_db_key, session_db_value) = new_session.into_db_resource()?;
-        let created_session: Option<Session> = self.db.create(session_db_key).content(session_db_value).await?;
+        let created_session: Option<Session> = self.db.query(surreal_quote!("CREATE #record(&new_session)")).await?.take(0)?;
 
         if created_session.is_none() {
             return Err(OurErrors::InternalServerError { message: "Not able to create new session, error code: 522".to_owned() });

@@ -22,7 +22,7 @@ impl UserController {
         UserController {
             router: Router::new().route("/create", post(Self::create))
                 .with_state(UserControllerState {
-                    ns: String::from(""),
+                    ns: String::from("user-controller"),
                     create_user_service: CreateUserService { db: db.clone() }
                 })
         }

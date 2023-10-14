@@ -1,5 +1,6 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
+use surreal_derive::SurrealDerive;
 use crate::entities::token::Token;
 use crate::entities::user::User;
 
@@ -12,7 +13,7 @@ use crate::entities::user::User;
 * the current refresh token will become invalid,
 * a new refresh token will be response along with the new access token.
 */
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, SurrealDerive)]
 pub struct Session {
     pub current_refresh_token: Token,
     pub last_refreshed_at: DateTime<Utc>,
