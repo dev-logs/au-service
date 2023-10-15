@@ -36,7 +36,9 @@ impl OurService<Params, Session> for CreateSessionService {
             user: user.unwrap()
         };
 
-        let created_session: Option<Session> = self.db.query(surreal_quote!("CREATE #record(&new_session)")).await?.take(0)?;
+        let created_session: Option<Session> = self.db.query(surreal_quote!(r"
+            CREATE #record(&new_session)
+        ")).await?.take(0)?;
 
         if created_session.is_none() {
             return Err(OurErrors::InternalServerError { message: "Not able to create new session, error code: 522".to_owned() });
