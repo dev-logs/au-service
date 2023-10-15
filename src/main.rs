@@ -11,19 +11,17 @@ mod db;
 
 use api::controllers::authentication::AuthenticationController;
 use axum::{Router, Server};
-use surreal_derive::*;
 use log::info;
 use crate::core_utils::configs::CONFIGS;
 use surrealdb::{Surreal, engine::remote::ws::{Ws, Client}, opt::auth::Root};
 use std::{net::{IpAddr, Ipv4Addr, SocketAddr}};
 use std::fmt::Display;
 use std::ops::Deref;
-use chrono::{DateTime, Utc};
 use once_cell::sync::Lazy;
 
 use pretty_env_logger::formatted_timed_builder;
+use surreal_devl::config::SurrealDeriveConfig;
 use surreal_devl::serialize::SurrealSerialize;
-use surrealdb::opt::RecordId;
 use crate::api::controllers::user::UserController;
 
 type Db = Surreal<Client>;
@@ -44,6 +42,7 @@ async fn main() {
 
     log_builder.init();
     info!(target: &namespace, "Configs {:?}", *CONFIGS);
+
     // #endregion
 
     // #region setup db connection
