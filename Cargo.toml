@@ -4,8 +4,8 @@ version = "0.1.0"
 edition = "2021"
 
 [package.metadata]
+surreal_use_camel_case = true
 surreal_enable_log = true
-surreal_enable_snake_case = true
 surreal_namespace = "surrealql-derive"
 surreal_enable_compile_log = true
 surreal_info_log_macro = "log::info"
