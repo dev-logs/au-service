@@ -1,6 +1,6 @@
 use async_trait::async_trait;
 use chrono::Utc;
-use surreal_derive::surreal_quote;
+use surreal_derive_plus::surreal_quote;
 use crate::{Db, entities::{session::Session, user::User}, core_utils::errors::OurErrors};
 use crate::entities::token::Token;
 use super::base::{OurService, OurResult};

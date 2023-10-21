@@ -1,5 +1,5 @@
 use log::info;
-use surreal_derive::surreal_quote;
+use surreal_derive_plus::surreal_quote;
 use crate::Db;
 use crate::services::base::{OurResult, OurService};
 use crate::entities::issuer::Issuer;

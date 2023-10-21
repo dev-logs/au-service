@@ -3,9 +3,8 @@ use crate::core_utils::errors::OurErrors;
 use crate::entities::user::User;
 use crate::services::base::{OurService, OurResult};
 use async_trait::async_trait;
-use log::info;
 use serde::{Deserialize, Serialize};
-use surreal_derive::surreal_quote;
+use surreal_derive_plus::surreal_quote;
 use tokio::io::AsyncReadExt;
 
 #[derive(Clone)]
@@ -34,8 +33,9 @@ struct Person<'a> {
 #[async_trait]
 impl OurService<Params, User> for CreateUserService {
     async fn execute(self, params: Params) -> OurResult<User> {
-        info!("created user");
-        if let Some(created_user) = self.db.query(surreal_quote!("CREATE #record(&params.user)")).await?.take(0)? {
+        if let Some(created_user) = self.db.query(surreal_quote ! ("
+            CREATE #id(&params.user) #content(&params.user);
+         ")).await?.take(0)? {
            return Ok(created_user);
         }
 

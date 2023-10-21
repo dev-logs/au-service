@@ -1,6 +1,6 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-use surreal_derive::SurrealDerive;
+use surreal_derive_plus::SurrealDerive;
 use crate::entities::token::Token;
 use crate::entities::user::User;
 
