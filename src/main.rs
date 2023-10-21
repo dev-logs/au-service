@@ -18,10 +18,7 @@ use std::{net::{IpAddr, Ipv4Addr, SocketAddr}};
 use std::fmt::Display;
 use std::ops::Deref;
 use once_cell::sync::Lazy;
-
 use pretty_env_logger::formatted_timed_builder;
-use surreal_derive_plus::surreal_quote;
-use surreal_devl::config::SurrealDeriveConfig;
 use surreal_devl::serialize::SurrealSerialize;
 use crate::api::controllers::user::UserController;
 
@@ -70,53 +67,4 @@ async fn main() {
         .await
         .unwrap();
     // #endregion
-}
-
-#[cfg(test)]
-mod tests {
-    use crate::entities;
-
-    #[test]
-    fn age() {
-        let age = 2;
-        let query_statement = surreal_derive_plus::surreal_quote!("CREATE user SET age = #age");
-
-        assert_eq!(query_statement, "CREATE user SET age = 2")
-    }
-
-    #[test]
-    fn array() {
-        use entities::user::User;
-        let friends = vec![
-            User {
-                name: "clay".to_string(),
-                full_name: "clay clay".to_string(),
-                password: "123123".to_string(),
-            },
-            User {
-                name: "joih".to_string(),
-                full_name: "joih joih".to_string(),
-                password: "123123".to_string(),
-            }
-        ];
-
-        let age = 2;
-        let query_statement = surreal_derive_plus::surreal_quote!("CREATE user SET friends= #age");
-        assert_eq!(query_statement, "CREATE user SET friends= [user:clay, user:joih]");
-    }
-
-    #[test]
-    fn date() {
-        use chrono::*;
-        use entities::user::User;
-
-        let user =  User {
-            name: "clay".to_string(),
-            full_name: "clay clay".to_string(),
-            password: "123123".to_string(),
-        };
-
-        let query_statement = surreal_derive_plus::surreal_quote!("UPDATE #id(&user) SET age = 10");
-        assert_eq!(query_statement, "UPDATE user:clay SET brithday = '2020-01-01T00:00:00Z");
-    }
 }

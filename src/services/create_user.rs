@@ -33,9 +33,7 @@ struct Person<'a> {
 #[async_trait]
 impl OurService<Params, User> for CreateUserService {
     async fn execute(self, params: Params) -> OurResult<User> {
-        if let Some(created_user) = self.db.query(surreal_quote ! ("
-            CREATE #id(&params.user) #content(&params.user);
-         ")).await?.take(0)? {
+        if let Some(created_user) = self.db.query(surreal_quote ! ("CREATE #record(&params.user)")).await?.take(0)? {
            return Ok(created_user);
         }
 

@@ -1,6 +1,5 @@
 use lazy_static::lazy_static;
 use std::env;
-
 #[derive(Debug)]
 pub struct RestfulService {
     pub port: u16,
