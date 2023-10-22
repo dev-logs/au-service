@@ -1,13 +1,11 @@
 use axum::{Router, routing::post, extract::State, Json};
-use axum::extract::RawBody;
 use lazy_static::__Deref;
-use surrealdb::dbs::Session;
-
+use surrealdb::engine::remote::ws::Client;
+use surrealdb::Surreal;
 use crate::Db;
-use crate::entities::token::Token;
+use crate::entities::session::Session;
 use crate::services::base::{OurResult, OurService};
-use crate::services::register;
-use crate::entities::user::User;
+use crate::services::create_session;
 
 pub struct SessionController {
     pub router: Router,
@@ -16,22 +14,23 @@ pub struct SessionController {
 #[derive(Clone)]
 pub struct SessionControllerState {
     pub ns: String,
-    pub register_service: register::RegisterUserService
+    pub create_session_service: create_session::CreateSessionService
 }
 
 impl SessionController {
-    pub fn new(db: Db) -> Self {
+    pub fn new(db: Surreal<Client>) -> Self {
         Self {
             router: Router::new()
                 .route("/session", post(Self::create))
                 .with_state(SessionControllerState {
                     ns: "session-controller".to_string(),
-                    register_service: register::RegisterUserService { create_user_service: crate::services::create_user::CreateUserService { db: db.clone() } }
+                    create_session_service: create_session::CreateSessionService { db: db.clone() }
                 })
         }
     }
 
-    pub async fn create(State(state): State<SessionControllerState>, user: Json<User>) -> OurResult<User> {
-        state.register_service.execute(register::Params {user: user.deref().to_owned()}).await
+    pub async fn create(State(state): State<SessionControllerState>, params: Json<create_session::Params>) -> OurResult<()> {
+        state.create_session_service.execute(params.deref().clone()).await?;
+        Ok(())
     }
 }

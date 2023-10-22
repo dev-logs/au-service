@@ -1,24 +1,28 @@
 use async_trait::async_trait;
 use chrono::Utc;
+use serde::{Deserialize, Serialize};
 use surreal_derive_plus::surreal_quote;
 use crate::{Db, entities::{session::Session, user::User}, core_utils::errors::OurErrors};
 use crate::entities::token::Token;
 use super::base::{OurService, OurResult};
 
+#[derive(Clone)]
 pub struct CreateSessionService {
-    db: Db,
+    pub(crate) db: Db,
 }
 
-#[derive(Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Params {
-    user_name: String,
-    password: String
+    pub user_name: String,
+    pub password: String
 }
 
 #[async_trait]
 impl OurService<Params, Session> for CreateSessionService {
     async fn execute(self, params: Params) -> OurResult<Session> {
-        let user: Option<User> = self.db.select(("user", params.user_name)).await?;
+        let user: Option<User> = self.db.query(surreal_quote!(r###"
+            SELECT * from user where name = #params.user_name and password = #params.password
+        "###)).await?.take(0).unwrap();
 
         if user.is_none() {
             return Err(OurErrors::UnAuthorization);
@@ -27,7 +31,7 @@ impl OurService<Params, Session> for CreateSessionService {
         let now = Utc::now();
         let new_session = Session {
             current_refresh_token: Token {
-                value: "".to_owned(),
+                content: surrealdb::sql::Uuid::new().to_string(),
                 created_at: Default::default(),
             },
             created_at: now.clone(),
@@ -36,9 +40,16 @@ impl OurService<Params, Session> for CreateSessionService {
             user: user.unwrap()
         };
 
-        let created_session: Option<Session> = self.db.query(surreal_quote!(r"
-            CREATE #record(&new_session)
-        ")).await?.take(0)?;
+        let created_session: Option<Session> = self.db
+            .query(surreal_quote!(r"
+                BEGIN TRANSACTION;
+                CREATE #record(&new_session.current_refresh_token);
+                CREATE #record(&new_session);
+                COMMIT TRANSACTION;
+                SELECT * FROM #id(&new_session) FETCH current_refresh_token;
+            "))
+            .await?
+            .take(2)?;
 
         if created_session.is_none() {
             return Err(OurErrors::InternalServerError { message: "Not able to create new session, error code: 522".to_owned() });

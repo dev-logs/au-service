@@ -27,13 +27,25 @@ async fn create_user() -> Result<()> {
         "/user",
         json!({
             "name": "tiendang",
-            "fullName": "Dang Minh Tiến",
+            "full_name": "Dang Minh Tiến",
             "password": "password"
         }),
     )
     .await?
     .print()
     .await?;
+
+    Ok(())
+}
+
+#[tokio::test]
+async fn create_session() -> Result<()> {
+    let config = CONFIG::new();
+    let hc = httpc_test::new_client(config.api_url).unwrap();
+    hc.do_post("/session", json! ({
+        "user_name": "tiendang",
+        "password": "password"
+    })).await?.print().await?;
 
     Ok(())
 }

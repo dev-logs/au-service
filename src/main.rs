@@ -20,6 +20,7 @@ use std::ops::Deref;
 use once_cell::sync::Lazy;
 use pretty_env_logger::formatted_timed_builder;
 use surreal_devl::serialize::SurrealSerialize;
+use crate::api::controllers::session::SessionController;
 use crate::api::controllers::user::UserController;
 
 type Db = Surreal<Client>;
@@ -60,6 +61,7 @@ async fn main() {
     info!(target: &namespace, "Starting Restful API server is started at port: {}", CONFIGS.restful_service.port);
     let main_route = Router::new()
         .merge(UserController::new(DB.clone()).router)
+        .merge(SessionController::new(DB.clone()).router)
         .merge(AuthenticationController::new(DB.clone()).router);
 
     Server::bind(&SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), CONFIGS.restful_service.port))

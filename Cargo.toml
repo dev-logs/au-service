@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [package.metadata]
-surreal_use_camel_case = true
+surreal_use_camel_case = false
 surreal_enable_log = true
 surreal_namespace = "surrealql-derive"
 surreal_enable_compile_log = true
@@ -28,7 +28,7 @@ jwt = "0.16.0"
 hmac = "0.12.1"
 quote = "1.0.33"
 surreal_devl = "1.0.0"
-surreal_derive_plus = "1.0.2"
+surreal_derive_plus = { path = "../surreal-derive" }
 
 [dev-dependencies]
 anyhow = "1"
