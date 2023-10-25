@@ -4,6 +4,8 @@ use surrealdb::engine::remote::ws::Client;
 use surrealdb::Surreal;
 use crate::Db;
 use crate::entities::session::Session;
+use crate::entities::token::Token;
+use crate::entities::user::User;
 use crate::services::base::{OurResult, OurService};
 use crate::services::create_session;
 
@@ -29,8 +31,8 @@ impl SessionController {
         }
     }
 
-    pub async fn create(State(state): State<SessionControllerState>, params: Json<create_session::Params>) -> OurResult<()> {
-        state.create_session_service.execute(params.deref().clone()).await?;
-        Ok(())
+    pub async fn create(State(state): State<SessionControllerState>, params: Json<create_session::Params>) -> OurResult<Json<Session>> {
+        let create_session = state.create_session_service.execute(params.deref().clone()).await?;
+        Ok(Json(create_session))
     }
 }

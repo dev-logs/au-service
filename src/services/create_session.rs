@@ -21,7 +21,7 @@ pub struct Params {
 impl OurService<Params, Session> for CreateSessionService {
     async fn execute(self, params: Params) -> OurResult<Session> {
         let user: Option<User> = self.db.query(surreal_quote!(r###"
-            SELECT * from user where name = "#&params.user_name" and password = "#&params.password"
+            SELECT * from user where name = #val(&params.user_name) and password = #val(&params.password)
         "###)).await?.take(0).unwrap();
 
         if user.is_none() {
@@ -32,7 +32,7 @@ impl OurService<Params, Session> for CreateSessionService {
         let new_session = Session {
             current_refresh_token: Token {
                 content: surrealdb::sql::Uuid::new().to_string(),
-                created_at: Default::default(),
+                created_at: Default::default()
             },
             created_at: now.clone(),
             last_refreshed_at: now.clone(),
@@ -46,7 +46,7 @@ impl OurService<Params, Session> for CreateSessionService {
                 CREATE #record(&new_session.current_refresh_token);
                 CREATE #record(&new_session);
                 COMMIT TRANSACTION;
-                SELECT * FROM #id(&new_session) FETCH current_refresh_token;
+                SELECT * FROM #id(&new_session) FETCH current_refresh_token, user;
             "))
             .await?
             .take(2)?;

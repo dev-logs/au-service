@@ -32,4 +32,3 @@ impl UserController {
         Ok(state.create_user_service.execute(crate::services::create_user::Params { user: create_user.deref().clone() }).await?)
     }
 }
-

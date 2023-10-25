@@ -17,7 +17,10 @@ pub struct Params {
 #[async_trait::async_trait]
 impl OurService<Params, Issuer> for CreateIssuerService {
     async fn execute(self, params: Params) -> OurResult<Issuer> {
-        let created_issuer: Option<Issuer> = self.db.query(surreal_quote!(r"CREATE #record(&params.issuer)")).await?.take(0)?;
+        let created_issuer: Option<Issuer> = self.db
+            .query(surreal_quote!("CREATE #record(&params.issuer)"))
+            .await?
+            .take(0)?;
 
         info!(target: &params.ns.clone(), "Created a new issuer {:?}", created_issuer);
 
