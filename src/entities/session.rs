@@ -15,9 +15,19 @@ use crate::entities::user::User;
 */
 #[derive(Debug, Clone, Deserialize, Serialize, SurrealDerive)]
 pub struct Session {
-    pub current_refresh_token: Token,
-    pub last_refreshed_at: DateTime<Utc>,
+    pub refresh_token: Token,
     pub user: User,
     pub created_at: DateTime<Utc>,
-    pub expired_at: DateTime<Utc>,
+    pub last_refreshed_at: DateTime<Utc>
+}
+
+impl Session {
+    pub fn new(token: Token, user: User) -> Self {
+        Self {
+            refresh_token: token,
+            user,
+            created_at: Utc::now(),
+            last_refreshed_at: token.created_at.clone(),
+        }
+    }
 }

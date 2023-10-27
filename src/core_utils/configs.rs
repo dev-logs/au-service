@@ -53,15 +53,25 @@ impl Default for SurrealDb {
 }
 
 #[derive(Debug)]
-pub struct JwtConfig {
-    pub private_key: String,
+pub struct TokenConfig {
+    pub jwt_refresh_token_private_key: String,
+    pub jwt_access_token_private_key: String,
+    pub access_token_duration: u64,
+    pub refresh_token_duration: u64,
+    pub session_duration: u64
 }
 
-impl Default for JwtConfig {
+impl Default for TokenConfig {
     fn default() -> Self {
-        JwtConfig {
-            private_key: env::var("DEVLOGS_AU_JWT_PRIVATE_KEY")
+        let refresh_token_duration = u64::from(env::var("DEVLOGS_AU_REFRESH_TOKEN_LIFETIME_IN_MS").unwrap_or("86400000".to_owned())); // 1 day
+        Self {
+            jwt_refresh_token_private_key: env::var("DEVLOGS_AU_JWT_REFRESH_TOKEN_PRIVATE_KEY")
                 .unwrap_or("this_is_unsafe_keythis_is_unsafe_keythis_is_unsafe_key".to_owned()),
+            jwt_access_token_private_key: env::var("DEVLOGS_AU_JWT_ACCESS_TOKEN_PRIVATE_KEY")
+                .unwrap_or("this_is_unsafe_keythis_is_unsafe_keythis_is_unsafe_key".to_owned()),
+            access_token_duration: u64::from(env::var("DEVLOGS_AU_ACCESS_TOKEN_LIFETIME_IN_MS").unwrap_or("900000".to_owned())), // 15 minutes
+            refresh_token_duration,
+            session_duration: u64::from(env::var("DEVLOGS_AU_SESSION_LIFETIME_IN_MS").unwrap_or(refresh_token_duration.to_string())), // equal the refresh token duration
         }
     }
 }
@@ -71,7 +81,7 @@ pub struct Config {
     pub surreal_db: SurrealDb,
     pub grpc_service: GrpcService,
     pub restful_service: RestfulService,
-    pub jwt_config: JwtConfig,
+    pub token: TokenConfig,
 }
 
 lazy_static! {

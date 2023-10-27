@@ -30,7 +30,7 @@ impl OurService<Params, Session> for CreateSessionService {
 
         let now = Utc::now();
         let new_session = Session {
-            current_refresh_token: Token {
+            refresh_token: Token {
                 content: surrealdb::sql::Uuid::new().to_string(),
                 created_at: Default::default()
             },
