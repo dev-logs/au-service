@@ -1,3 +1,4 @@
+use std::time::Duration;
 use async_trait::async_trait;
 use axum::{extract::FromRequestParts, http::request::Parts};
 use log::info;
@@ -13,7 +14,7 @@ impl<S: Send + Sync> FromRequestParts<S> for Token {
         let headers = &parts.headers;
         if headers.contains_key("Authorization") {
             return Result::Ok(
-                Token {content: headers.get("Authorization").unwrap().to_str().unwrap().to_owned(), created_at: Default::default() }
+                Token {content: headers.get("Authorization").unwrap().to_str().unwrap().to_owned(), created_at: Default::default(), duration: Duration::from_millis(200000) }
             );
         }
 

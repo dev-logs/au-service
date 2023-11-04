@@ -24,7 +24,7 @@ pub struct Session {
 impl Session {
     pub fn new(token: Token, user: User) -> Self {
         Self {
-            refresh_token: token,
+            refresh_token: token.clone(),
             user,
             created_at: Utc::now(),
             last_refreshed_at: token.created_at.clone(),

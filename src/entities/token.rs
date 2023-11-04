@@ -1,4 +1,5 @@
-use chrono::{DateTime, Duration, Utc};
+use std::time::Duration;
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use surreal_derive_plus::SurrealDerive;
 

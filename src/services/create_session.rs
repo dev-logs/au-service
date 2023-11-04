@@ -32,21 +32,21 @@ impl OurService<Params, Session> for CreateSessionService {
         let new_session = Session {
             refresh_token: Token {
                 content: surrealdb::sql::Uuid::new().to_string(),
-                created_at: Default::default()
+                created_at: Default::default(),
+                duration: std::time::Duration::from_millis(2000)
             },
             created_at: now.clone(),
             last_refreshed_at: now.clone(),
-            expired_at: now.clone(),
             user: user.unwrap()
         };
 
         let created_session: Option<Session> = self.db
             .query(surreal_quote!(r"
                 BEGIN TRANSACTION;
-                CREATE #record(&new_session.current_refresh_token);
+                CREATE #record(&new_session.refresh_token);
                 CREATE #record(&new_session);
                 COMMIT TRANSACTION;
-                SELECT * FROM #id(&new_session) FETCH current_refresh_token, user;
+                SELECT * FROM #id(&new_session) FETCH refresh_token, user;
             "))
             .await?
             .take(2)?;

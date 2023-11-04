@@ -27,8 +27,8 @@ lazy_static = "1.4.0"
 jwt = "0.16.0"
 hmac = "0.12.1"
 quote = "1.0.33"
-surreal_devl = "1.0.1"
-surreal_derive_plus = "1.0.4"
+surreal_devl = "1.0.2"
+surreal_derive_plus = "1.0.7"
 
 [dev-dependencies]
 anyhow = "1"

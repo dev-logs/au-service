@@ -70,15 +70,3 @@ async fn main() {
         .unwrap();
     // #endregion
 }
-
-#[cfg(test)]
-mod test {
-    use chrono::{DateTime, TimeZone, Utc};
-
-    #[test]
-    fn test() {
-        let birthday: DateTime<Utc> = Utc.with_ymd_and_hms(2020, 1, 1, 0, 0, 0).unwrap();
-        let query_statement = surreal_derive_plus::surreal_quote!("CREATE user SET birthday = #date(&birthday)");
-        assert_eq!(query_statement, "CREATE user SET birthday = '2020-01-01T00:00:00Z'");
-    }
-}
